@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, Button, StyleSheet, KeyboardAvoidingView, TouchableWithoutFeedback, ToastAndroid } from 'react-native';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 
 const UserFormScreen = (props) => {
@@ -13,76 +13,93 @@ const UserFormScreen = (props) => {
     const [islastnamevalid, setIsLastNameValid] = useState(0);
     const [isnicknamevalid, setIsNickNameValid] = useState(0);
     const [isagevalid, setIsAgeValid] = useState(0);
+    const [isFormValid, setIsFormValid] = useState(false);
 
     const handleSubmit = () => {
         if (firstname.trim().length > 0) {
             setIsFirstNameValid(1);
         } else {
             setIsFirstNameValid(2);
-            
+
         }
 
         if (lastname.trim().length > 0) {
             setIsLastNameValid(1);
         } else {
             setIsLastNameValid(2);
-            
+
         }
 
         if (nickname.trim().length > 0) {
             setIsNickNameValid(1);
         } else {
             setIsNickNameValid(2);
-            
+
         }
 
         if (age.trim().length > 0 && parseInt(age) >= 21 && parseInt(age) <= 40) {
             setIsAgeValid(1);
         } else {
             setIsAgeValid(2);
-            
+
         }
 
-        if (isfirstnamevalid == 2 || islastnamevalid == 2 || isnicknamevalid == 2 || isagevalid == 2) return
-        
-        console.log('valid details!');
-
+        if (isfirstnamevalid === 1 && islastnamevalid === 1 && isnicknamevalid === 1 && isagevalid === 1) {
+            setIsFormValid(true);
+            showSubmitToast();
+            console.log('valid details!');
+        }
     }
-    
-    return (
-        <ScrollView>
-            <View style={styles.form}>
-                <View style={styles.formControl}>
-                    <Text style={styles.label}>Firstname</Text>
-                    <TextInput style={styles.input} value={firstname} onChangeText={text => {setFirstName(text);setIsFirstNameValid(0)}} />
-                    {isfirstnamevalid === 2 ? <Text>Please enter your Firstname</Text>: <Text></Text>}
-                </View>
-                <View style={styles.formControl}>
-                    <Text style={styles.label}>Lastname</Text>
-                    <TextInput style={styles.input} value={lastname} onChangeText={text => {setLastName(text);setIsLastNameValid(0)}} />
-                    {islastnamevalid === 2 ? <Text>Please enter your Lastname</Text>: <Text></Text>}
-                </View>
-                <View style={styles.formControl}>
-                    <Text style={styles.label}>Nickname</Text>
-                    <TextInput style={styles.input} value={nickname} onChangeText={text => {setNickName(text);setIsNickNameValid(0)}} />
-                    {isnicknamevalid === 2 ? <Text>Please enter your Nickname</Text>: <Text></Text>}
-                </View>
-                <View style={styles.formControl}>
-                    <Text style={styles.label}>Age</Text>
-                    <TextInput style={styles.input} value={age} onChangeText={text => {setAge(text);setIsAgeValid(0)}} keyboardType="numeric"/>
-                    {isagevalid === 2 ? <Text>Please enter a valid Age</Text>: <Text>Enter age between 21 and 40</Text>}
-                </View>
-            </View>
-            <View style={styles.buttonContainer}>
-                <View>
-                    <Button title="Submit Details" onPress={handleSubmit} />
-                </View>
-                <View>
-                    <Button title="Take Quiz" />
-                </View>
-            </View>
-        </ScrollView>
 
+    const goTOQuiz = () => {
+        isFormValid ? props.navigation.navigate('Quiz', { name: 'Question 1' }) : showQuizToast();
+    }
+
+    const showSubmitToast = () => {
+        ToastAndroid.show("Details saved", ToastAndroid.SHORT);
+    };
+
+    const showQuizToast = () => {
+        ToastAndroid.show("Please Submit the form first", ToastAndroid.SHORT);
+    };
+
+    return (
+        <KeyboardAvoidingView>
+            <TouchableWithoutFeedback>
+                <ScrollView>
+                    <View style={styles.form}>
+                        <View style={styles.formControl}>
+                            <Text style={styles.label}>Firstname</Text>
+                            <TextInput style={styles.input} value={firstname} onChangeText={text => { setFirstName(text); setIsFirstNameValid(0) }} />
+                            {isfirstnamevalid === 2 ? <Text>Please enter your Firstname</Text> : <Text></Text>}
+                        </View>
+                        <View style={styles.formControl}>
+                            <Text style={styles.label}>Lastname</Text>
+                            <TextInput style={styles.input} value={lastname} onChangeText={text => { setLastName(text); setIsLastNameValid(0) }} />
+                            {islastnamevalid === 2 ? <Text>Please enter your Lastname</Text> : <Text></Text>}
+                        </View>
+                        <View style={styles.formControl}>
+                            <Text style={styles.label}>Nickname</Text>
+                            <TextInput style={styles.input} value={nickname} onChangeText={text => { setNickName(text); setIsNickNameValid(0) }} />
+                            {isnicknamevalid === 2 ? <Text>Please enter your Nickname</Text> : <Text></Text>}
+                        </View>
+                        <View style={styles.formControl}>
+                            <Text style={styles.label}>Age</Text>
+                            <TextInput style={styles.input} value={age} onChangeText={text => { setAge(text); setIsAgeValid(0) }} keyboardType="numeric" />
+                            {isagevalid === 2 ? <Text>Please enter a valid Age</Text> : <Text>Enter age between 21 and 40</Text>}
+                        </View>
+                    </View>
+                    <View style={styles.buttonContainer}>
+                        <View>
+                            <Button title="Submit Details" onPress={handleSubmit} />
+                        </View>
+                        <View>
+                            <Button title="Take Quiz" onPress={goTOQuiz} />
+                        </View>
+                    </View>
+                </ScrollView>
+            </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
     );
 }
 
