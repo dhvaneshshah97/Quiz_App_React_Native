@@ -5,24 +5,15 @@ import QuesAnsPair from '../components/QuesAnsPair';
 
 const Quiz = (props) => {
     const [questionIndex, setQuestionIndex] = useState(0);
-
-    // const backAction = () => {
-    //     if (questionIndex > 0 ) {
-    //         setQuestionIndex((index)=>index-1);
-    //     }
-    //     return true;
-    // }
-
-    // useEffect(()=> {
-    //     BackHandler.addEventListener('hardwareBackPress', backAction);
-    // },[])
-    
+    const [test, setTest] = useState(-1);
     const handleQuizTraversal = () => {
         if (questionIndex === questions['questions'].length - 1) {
             props.navigation.navigate('Home');
             return
         }
+        setTest(-1);
         setQuestionIndex((questionIndex) => questionIndex + 1);
+        
     }
 
     return (
@@ -30,7 +21,8 @@ const Quiz = (props) => {
             <QuesAnsPair 
                 question={questions['questions'][questionIndex]['questionText']} 
                 index={questionIndex}
-                answers={questions['questions'][questionIndex]['answers']} 
+                answers={questions['questions'][questionIndex]['answers']}
+                initialState={test} 
             />
             
             <View style={styles.buttonContainer}>

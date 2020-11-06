@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, Button, TouchableOpacity, StyleSheet } from 'react-native';
 import Colors from '../constants/Colors';
-import RadioButton from './RadioButton';
+import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
 
 const QuesAnsPair = (props) => {
-    const [isSelected, setIsSelected] = useState(false);
+    const [selected, setSelected] = useState({});
+    const [score, setScore] = useState([]);
+
+    console.log(selected)
     return (
         <>
             <View style={styles.questionContainer}>
@@ -13,17 +16,27 @@ const QuesAnsPair = (props) => {
                     {props.question}
                 </Text>
             </View>
+            <View>
+                <Text>Selected Answer: {selected[props.index]} </Text>
+            </View>
             <View style={styles.answersContainer}>
+                {/* <RadioForm
+                    animation={false}
+                    radio_props={props.answers}
+                    initial={props.initialState}
+                    onPress={handleRadioSubmit}
+                /> */}
                 {
                     props.answers.map((ans, i) => {
                         return (
-                            <View style={styles.answers} key={i}>
-                                <RadioButton selected={isSelected} />
-                                <TouchableOpacity>
-                                    <Text style={styles.answer}>{ans['text']}</Text>
-                                </TouchableOpacity>
-                                
-                            </View>
+
+                            <TouchableOpacity key={i} style={styles.answer} onPress={() => setSelected({ ...selected, [props.index]: ans['label'] })}>
+                                <View>
+                                    <Text style={styles.answerText}>{ans['label']}</Text>
+                                </View>
+                            </TouchableOpacity>
+
+
                         )
                     })
                 }
@@ -40,12 +53,14 @@ const styles = StyleSheet.create({
         borderRadius: 7,
         borderColor: Colors.primary,
         borderWidth: 2,
+        minHeight: '25%'
     },
     questionIndex: {
         textAlign: 'center',
         fontSize: 22,
         marginBottom: 15,
         fontWeight: 'bold',
+        color: Colors.primary
     },
     questionText: {
         fontSize: 20,
@@ -54,15 +69,20 @@ const styles = StyleSheet.create({
     },
     answersContainer: {
         marginVertical: 20,
-        
-    },
-    answers: {
-        flexDirection: 'row',
-        marginVertical: 10,
-        marginLeft: 150
+        alignItems: 'center',
     },
     answer: {
-        marginLeft: 20
+        backgroundColor: 'lightyellow',
+        padding: 10,
+        width: '45%',
+        marginVertical: 10,
+        alignItems: 'center',
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: Colors.primary
+    },
+    answerText: {
+        fontSize: 17,
     }
 })
 
