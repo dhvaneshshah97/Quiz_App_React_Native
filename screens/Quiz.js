@@ -46,7 +46,7 @@ const Quiz = (props) => {
             <View style={styles.buttonContainer}>
                 <View style={styles.backButton}>
                         {
-                            showNext && questionIndex > 0 ? <Button title="Back " onPress={() => setQuestionIndex((index) => index - 1)} /> : null
+                            showNext && questionIndex > 0 || (selected[questionIndex]!==undefined && questionIndex > 0) ? <Button title="Back " onPress={() => setQuestionIndex((index) => index - 1)} /> : null
                         }
                     </View>
                 {
