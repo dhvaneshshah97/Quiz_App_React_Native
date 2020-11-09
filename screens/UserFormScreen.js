@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Button, StyleSheet, KeyboardAvoidingView, TouchableWithoutFeedback, ToastAndroid } from 'react-native';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
+import Colors from '../constants/Colors';
 
 const UserFormScreen = (props) => {
     const [firstname, setFirstName] = useState('');
@@ -14,6 +15,7 @@ const UserFormScreen = (props) => {
     const [isnicknamevalid, setIsNickNameValid] = useState(0);
     const [isagevalid, setIsAgeValid] = useState(0);
     const [isFormValid, setIsFormValid] = useState(false);
+
 
     const handleSubmit = () => {
         if (firstname.trim().length > 0) {
@@ -97,6 +99,12 @@ const UserFormScreen = (props) => {
                             <Button title="Take Quiz" onPress={goTOQuiz} />
                         </View>
                     </View>
+                    {
+                        props.route.params ? <View style={styles.scoreContainer}>
+                            <Text style={styles.score}>Your Score: {props.route.params.score} out of {props.route.params.totalQuestions}</Text>
+                        </View> : null
+                    }
+
                 </ScrollView>
             </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
@@ -126,6 +134,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around'
     },
+    score: {
+        fontSize: 25,
+        color: Colors.primary,
+    },
+    scoreContainer: {
+        marginTop: 50,
+        alignItems: 'center',
+    }
 });
 
 export default UserFormScreen;

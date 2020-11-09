@@ -1,13 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Button, TouchableOpacity, StyleSheet } from 'react-native';
 import Colors from '../constants/Colors';
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
 
 const QuesAnsPair = (props) => {
     const [selected, setSelected] = useState({});
-    const [score, setScore] = useState([]);
+    const [score, setScore] = useState({});
 
-    console.log(selected)
+    useEffect(() => {
+            console.log(score);
+            var arr = Object.values(score)
+            let temp = 0;
+            for (let i = 0; i < arr.length; i++) {
+                temp = temp + arr[i]
+            }
+            final_score = temp
+            console.log(final_score);
+            props.getScore(final_score);
+            props.get_selected(selected)
+    }, [score, props.index])
+
+    var final_score;
+    console.log(score)
+    const handleNext = async (selectedAns, achieved_score) => {
+        setSelected({ ...selected, [props.index]: selectedAns });
+        setScore({ ...score, [props.index]: achieved_score });
+        props.is_next();
+    }
+
     return (
         <>
             <View style={styles.questionContainer}>
@@ -16,27 +36,19 @@ const QuesAnsPair = (props) => {
                     {props.question}
                 </Text>
             </View>
-            <View>
-                <Text>Selected Answer: {selected[props.index]} </Text>
+            <View style={styles.selectedAnswerContainer}>
+                <Text style={styles.selectedAnswer}>Selected Answer: {selected[props.index] === undefined ? <Text>_________</Text> : selected[props.index]} </Text>
             </View>
             <View style={styles.answersContainer}>
-                {/* <RadioForm
-                    animation={false}
-                    radio_props={props.answers}
-                    initial={props.initialState}
-                    onPress={handleRadioSubmit}
-                /> */}
                 {
                     props.answers.map((ans, i) => {
                         return (
 
-                            <TouchableOpacity key={i} style={styles.answer} onPress={() => setSelected({ ...selected, [props.index]: ans['label'] })}>
+                            <TouchableOpacity key={i} style={styles.answer} onPress={handleNext.bind(this, ans['label'], ans['value'])}>
                                 <View>
                                     <Text style={styles.answerText}>{ans['label']}</Text>
                                 </View>
                             </TouchableOpacity>
-
-
                         )
                     })
                 }
@@ -83,6 +95,14 @@ const styles = StyleSheet.create({
     },
     answerText: {
         fontSize: 17,
+    },
+    selectedAnswer: {
+        fontSize: 20,
+        color: Colors.primary,
+    },
+    selectedAnswerContainer: {
+        marginVertical: 8,
+        alignItems: 'center',
     }
 })
 
