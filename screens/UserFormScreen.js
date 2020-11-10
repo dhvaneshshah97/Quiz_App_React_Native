@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Button, StyleSheet, KeyboardAvoidingView, TouchableWithoutFeedback, ToastAndroid } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import Colors from '../constants/Colors';
 
@@ -16,6 +17,43 @@ const UserFormScreen = (props) => {
     const [isagevalid, setIsAgeValid] = useState(0);
     const [isFormValid, setIsFormValid] = useState(false);
 
+
+    const savedUserToSF = async () => {
+        try {
+            await AsyncStorage.setItem('fname', firstname);
+            await AsyncStorage.setItem('lname', lastname);
+            await AsyncStorage.setItem('nname', nickname);
+            await AsyncStorage.setItem('age', age);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const getUserFromSF = async () => {
+        try {
+            const firstname = await AsyncStorage.getItem('fname');
+            const lastname = await AsyncStorage.getItem('lname');
+            const nickname = await AsyncStorage.getItem('nname');
+            const age = await AsyncStorage.getItem('age');
+            setFirstName(firstname !== null ? firstname : '');
+            setLastName(lastname !== null ? lastname : '');
+            setNickName(nickname !== null ? nickname : '');
+            setAge(age !== null ? age : '');
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+
+    useEffect(() => {
+        if (isfirstnamevalid === 1 && islastnamevalid === 1 && isnicknamevalid === 1 && isagevalid === 1) {
+            setIsFormValid(true);
+            savedUserToSF();
+            showSubmitToast();
+            console.log('valid details!');
+        }
+        getUserFromSF();
+    }, [isfirstnamevalid, islastnamevalid, isnicknamevalid, isagevalid])
 
     const handleSubmit = () => {
         if (firstname.trim().length > 0) {
@@ -46,11 +84,7 @@ const UserFormScreen = (props) => {
 
         }
 
-        if (isfirstnamevalid === 1 && islastnamevalid === 1 && isnicknamevalid === 1 && isagevalid === 1) {
-            setIsFormValid(true);
-            showSubmitToast();
-            console.log('valid details!');
-        }
+
     }
 
     const goTOQuiz = () => {
