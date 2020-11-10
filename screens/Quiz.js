@@ -3,6 +3,7 @@ import { View, Text, Button, StyleSheet, BackHandler } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import questions from '../assets/questions.json';
 import QuesAnsPair from '../components/QuesAnsPair';
+import { writeScore } from '../assets/scoreStorage';
 
 const Quiz = (props) => {
     const [questionIndex, setQuestionIndex] = useState(0);
@@ -12,6 +13,7 @@ const Quiz = (props) => {
 
     const handleQuizTraversal = () => {
         if (questionIndex === questions['questions'].length - 1) {
+            writeScore(score.toString());
             props.navigation.navigate('Home', {score: score, totalQuestions: questions['questions'].length});
             return
         }

@@ -3,6 +3,9 @@ import { View, Text, Button, StyleSheet, KeyboardAvoidingView, TouchableWithoutF
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import Colors from '../constants/Colors';
+import {readScore} from '../assets/scoreStorage';
+import { read } from 'react-native-fs';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 const UserFormScreen = (props) => {
     const [firstname, setFirstName] = useState('');
@@ -17,6 +20,7 @@ const UserFormScreen = (props) => {
     const [isagevalid, setIsAgeValid] = useState(0);
     const [isFormValid, setIsFormValid] = useState(false);
 
+    const [score, setScore] = useState(null);
 
     const savedUserToSF = async () => {
         try {
@@ -31,29 +35,37 @@ const UserFormScreen = (props) => {
 
     const getUserFromSF = async () => {
         try {
-            const firstname = await AsyncStorage.getItem('fname');
-            const lastname = await AsyncStorage.getItem('lname');
-            const nickname = await AsyncStorage.getItem('nname');
-            const age = await AsyncStorage.getItem('age');
-            setFirstName(firstname !== null ? firstname : '');
-            setLastName(lastname !== null ? lastname : '');
-            setNickName(nickname !== null ? nickname : '');
-            setAge(age !== null ? age : '');
+            const fname = await AsyncStorage.getItem('fname');
+            const lname = await AsyncStorage.getItem('lname');
+            const nname = await AsyncStorage.getItem('nname');
+            const ageSF = await AsyncStorage.getItem('age');
+            setFirstName(fname !== null ? fname : firstname);
+            setLastName(lname !== null ? lname : lastname);
+            setNickName(nname !== null ? nname : nickname);
+            setAge(ageSF !== null ? ageSF : age);
+            if (firstname !== null) setIsFormValid(true);
         } catch (error) {
             console.log(error);
         }
     }
 
+    const getScoreFromFile = async () => {
+        const score = await readScore();
+        setScore(score);
+    }
 
     useEffect(() => {
+        getScoreFromFile();
         if (isfirstnamevalid === 1 && islastnamevalid === 1 && isnicknamevalid === 1 && isagevalid === 1) {
             setIsFormValid(true);
             savedUserToSF();
             showSubmitToast();
             console.log('valid details!');
+            
         }
         getUserFromSF();
-    }, [isfirstnamevalid, islastnamevalid, isnicknamevalid, isagevalid])
+        
+    }, [isfirstnamevalid, islastnamevalid, isnicknamevalid, isagevalid, props.route.params])
 
     const handleSubmit = () => {
         if (firstname.trim().length > 0) {
@@ -88,7 +100,7 @@ const UserFormScreen = (props) => {
     }
 
     const goTOQuiz = () => {
-        isFormValid ? props.navigation.navigate('Quiz', { name: 'Question 1' }) : showQuizToast();
+        isFormValid ? props.navigation.navigate('Quiz') : showQuizToast();
     }
 
     const showSubmitToast = () => {
@@ -107,22 +119,22 @@ const UserFormScreen = (props) => {
                         <View style={styles.formControl}>
                             <Text style={styles.label}>Firstname</Text>
                             <TextInput style={styles.input} value={firstname} onChangeText={text => { setFirstName(text); setIsFirstNameValid(0) }} />
-                            {isfirstnamevalid === 2 ? <Text>Please enter your Firstname</Text> : <Text></Text>}
+                            {isfirstnamevalid === 2 ? <Text style={styles.validateMessage}>Please enter your Firstname</Text> : <Text></Text>}
                         </View>
                         <View style={styles.formControl}>
                             <Text style={styles.label}>Lastname</Text>
                             <TextInput style={styles.input} value={lastname} onChangeText={text => { setLastName(text); setIsLastNameValid(0) }} />
-                            {islastnamevalid === 2 ? <Text>Please enter your Lastname</Text> : <Text></Text>}
+                            {islastnamevalid === 2 ? <Text style={styles.validateMessage}>Please enter your Lastname</Text> : <Text></Text>}
                         </View>
                         <View style={styles.formControl}>
                             <Text style={styles.label}>Nickname</Text>
                             <TextInput style={styles.input} value={nickname} onChangeText={text => { setNickName(text); setIsNickNameValid(0) }} />
-                            {isnicknamevalid === 2 ? <Text>Please enter your Nickname</Text> : <Text></Text>}
+                            {isnicknamevalid === 2 ? <Text style={styles.validateMessage}>Please enter your Nickname</Text> : <Text></Text>}
                         </View>
                         <View style={styles.formControl}>
                             <Text style={styles.label}>Age</Text>
                             <TextInput style={styles.input} value={age} onChangeText={text => { setAge(text); setIsAgeValid(0) }} keyboardType="numeric" />
-                            {isagevalid === 2 ? <Text>Please enter a valid Age</Text> : <Text>Enter age between 21 and 40</Text>}
+                            {isagevalid === 2 ? <Text style={styles.validateMessage}>Please enter a valid Age</Text> : <Text>Enter age between 21 and 40</Text>}
                         </View>
                     </View>
                     <View style={styles.buttonContainer}>
@@ -134,8 +146,8 @@ const UserFormScreen = (props) => {
                         </View>
                     </View>
                     {
-                        props.route.params ? <View style={styles.scoreContainer}>
-                            <Text style={styles.score}>Your Score: {props.route.params.score} out of {props.route.params.totalQuestions}</Text>
+                        (score!== -1 && score!== null) || props.route.params ? <View style={styles.scoreContainer}>
+                            <Text style={styles.score}>Your Score: {score} out of {4}</Text>
                         </View> : null
                     }
 
@@ -175,6 +187,9 @@ const styles = StyleSheet.create({
     scoreContainer: {
         marginTop: 50,
         alignItems: 'center',
+    },
+    validateMessage: {
+        color: 'red',
     }
 });
 
