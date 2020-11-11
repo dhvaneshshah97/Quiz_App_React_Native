@@ -7,20 +7,17 @@ const QuesAnsPair = (props) => {
     const [score, setScore] = useState({});
 
     useEffect(() => {
-            console.log(score);
             var arr = Object.values(score)
             let temp = 0;
             for (let i = 0; i < arr.length; i++) {
                 temp = temp + arr[i]
             }
             final_score = temp
-            console.log(final_score);
             props.getScore(final_score);
             props.get_selected(selected)
     }, [score, props.index])
 
     var final_score;
-    console.log(score)
     const handleNext = async (selectedAns, achieved_score) => {
         setSelected({ ...selected, [props.index]: selectedAns });
         setScore({ ...score, [props.index]: achieved_score });

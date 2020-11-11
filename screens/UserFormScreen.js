@@ -18,7 +18,7 @@ const UserFormScreen = (props) => {
     const [isagevalid, setIsAgeValid] = useState(0);
     const [isFormValid, setIsFormValid] = useState(false);
 
-    const [score, setScore] = useState(null);
+    const [scoreString, setScoreString] = useState(null);
 
     // Storing User to Shared Preferences
     const savedUserToSF = async () => {
@@ -51,8 +51,8 @@ const UserFormScreen = (props) => {
 
     // Reading and setting score from file
     const getScoreFromFile = async () => {
-        const score = await readScore();
-        setScore(score);
+        const scoreString = await readScore();
+        setScoreString(scoreString);
     }
 
     useEffect(() => {
@@ -65,7 +65,7 @@ const UserFormScreen = (props) => {
         }
         getUserFromSF();
         
-    }, [isfirstnamevalid, islastnamevalid, isnicknamevalid, isagevalid, props.route.params])
+    }, [isfirstnamevalid, islastnamevalid, isnicknamevalid, isagevalid, props.route.params]) // props.route.params is used here because I want to run useEffect again when execution comes from Quiz page to this home page so getScoreFromFile method will run and will fetch and display the latest score from file. So, in Quiz app it will write score at the time of pressing 'end' and here it will again get score from file.   
 
     const handleSubmit = () => {
         if (firstname.trim().length > 0) {
@@ -144,11 +144,10 @@ const UserFormScreen = (props) => {
                         </View>
                     </View>
                     {
-                        (score!== -1 && score!== null) || props.route.params ? <View style={styles.scoreContainer}>
-                            <Text style={styles.score}>Your Score: {score} out of {4}</Text>
+                        (scoreString!== 'noscore' && scoreString !== null) ? <View style={styles.scoreContainer}>
+                            <Text style={styles.score}>Your Score: {scoreString}</Text>
                         </View> : null
                     }
-
                 </ScrollView>
             </TouchableWithoutFeedback>
         </KeyboardAvoidingView>

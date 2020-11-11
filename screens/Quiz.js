@@ -12,8 +12,8 @@ const Quiz = (props) => {
 
     const handleQuizTraversal = () => {
         if (questionIndex === questions['questions'].length - 1) {
-            writeScore(score.toString());
-            props.navigation.navigate('Home', {score: score, totalQuestions: questions['questions'].length});
+            writeScore(`${score} out of ${questions['questions'].length}`);
+            props.navigation.navigate('Home', {score: score});
             return
         }
         setQuestionIndex((questionIndex) => questionIndex + 1);

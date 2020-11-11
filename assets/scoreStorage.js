@@ -13,9 +13,8 @@ export const writeScore = (score) => {
 
 export const readScore = async () => {
     return RNFS.readFile(path, 'utf8').then((content) => {
-        // console.log(content);
         return content.toString();
     }).catch((err) => {
-        return -1;
+        return 'noscore';
     });
 }
