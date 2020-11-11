@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Button, StyleSheet, BackHandler } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import React, { useState } from 'react';
+import { View, Button, StyleSheet } from 'react-native';
 import questions from '../assets/questions.json';
 import QuesAnsPair from '../components/QuesAnsPair';
 import { writeScore } from '../assets/scoreStorage';
@@ -34,7 +33,6 @@ const Quiz = (props) => {
     }
 
     return (
-        // <ScrollView>
         <View style={styles.screen}>
             <QuesAnsPair
                 question={questions['questions'][questionIndex]['questionText']}
@@ -58,7 +56,6 @@ const Quiz = (props) => {
                 }
             </View>
         </View>
-        // </ScrollView>
     );
 }
 

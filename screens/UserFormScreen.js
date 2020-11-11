@@ -20,6 +20,7 @@ const UserFormScreen = (props) => {
 
     const [score, setScore] = useState(null);
 
+    // Storing User to Shared Preferences
     const savedUserToSF = async () => {
         try {
             await AsyncStorage.setItem('fname', firstname);
@@ -31,6 +32,7 @@ const UserFormScreen = (props) => {
         }
     }
 
+    // Retrieving User from Shared Preferences
     const getUserFromSF = async () => {
         try {
             const fname = await AsyncStorage.getItem('fname');
@@ -47,6 +49,7 @@ const UserFormScreen = (props) => {
         }
     }
 
+    // Reading and setting score from file
     const getScoreFromFile = async () => {
         const score = await readScore();
         setScore(score);
@@ -92,8 +95,6 @@ const UserFormScreen = (props) => {
             setIsAgeValid(2);
 
         }
-
-
     }
 
     const goTOQuiz = () => {
