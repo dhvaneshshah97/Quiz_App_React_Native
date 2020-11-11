@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     answer: {
-        backgroundColor: 'lightyellow',
+        backgroundColor: Colors.accentSecondary,
         padding: 10,
         width: '45%',
         marginVertical: 10,

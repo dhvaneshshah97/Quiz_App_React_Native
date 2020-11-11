@@ -4,8 +4,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import Colors from '../constants/Colors';
 import {readScore} from '../assets/scoreStorage';
-import { read } from 'react-native-fs';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 const UserFormScreen = (props) => {
     const [firstname, setFirstName] = useState('');
@@ -61,7 +59,6 @@ const UserFormScreen = (props) => {
             savedUserToSF();
             showSubmitToast();
             console.log('valid details!');
-            
         }
         getUserFromSF();
         
@@ -134,7 +131,7 @@ const UserFormScreen = (props) => {
                         <View style={styles.formControl}>
                             <Text style={styles.label}>Age</Text>
                             <TextInput style={styles.input} value={age} onChangeText={text => { setAge(text); setIsAgeValid(0) }} keyboardType="numeric" />
-                            {isagevalid === 2 ? <Text style={styles.validateMessage}>Please enter a valid Age</Text> : <Text>Enter age between 21 and 40</Text>}
+                            {isagevalid === 2 ? <Text style={styles.validateMessage}>Please enter a valid Age</Text> : (parseInt(age) >=21 && parseInt(age) <= 40 && age.trim().length > 0 ? null : <Text>Enter age between 21 and 40</Text>)}
                         </View>
                     </View>
                     <View style={styles.buttonContainer}>
